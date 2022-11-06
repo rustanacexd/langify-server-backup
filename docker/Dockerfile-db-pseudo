@@ -1,0 +1,5 @@
+ARG version
+FROM postgres:$version
+
+COPY ./docker/restore_dbs.sh /docker-entrypoint-initdb.d/
+COPY ./docker/sql /sql/

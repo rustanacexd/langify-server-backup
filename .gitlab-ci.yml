@@ -1,0 +1,141 @@
+# Build
+stages:
+  - build
+  - test
+  - tag
+  - deploy
+
+include:
+  local: "image_versions.yml"
+
+backend:build:
+  stage: build
+  tags:
+    - docker
+  image:
+    name: docker/compose:1.25.4
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    SERVICES: build-django
+    COMPOSE_CMD: docker-compose -f docker-compose.yml -f docker/docker-compose.build.yml
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+    # Pull the latest image for caching purposes
+    - export IMAGE_TAG=latest
+    - ${COMPOSE_CMD} pull ${SERVICES}
+
+    # Build and push the new image
+    - export IMAGE_TAG=${CI_COMMIT_SHA}
+    - ${COMPOSE_CMD} build --parallel ${SERVICES}
+    - ${COMPOSE_CMD} push ${SERVICES}
+
+# Lint
+
+backend:checkstyle:
+  stage: test
+  tags:
+    - docker
+  image:
+    name: docker/compose:1.25.4
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    IMAGE_TAG: ${CI_COMMIT_SHA}
+    COMPOSE_CMD: docker-compose -f docker-compose.yml -f docker-compose.test.yml run django
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+    - ${COMPOSE_CMD} black --check ./
+  only:
+    changes:
+      - "**/*.py"
+
+# Test
+
+backend:test:dev:
+  stage: test
+  tags:
+    - docker
+  image:
+    name: docker/compose:1.25.4
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    IMAGE_TAG: ${CI_COMMIT_SHA}
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+    # The test docker-compose file runs our test command for us, just run the django service.
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml run django
+  coverage: '/^TOTAL\s+.*\s+(\d+\.?\d*)%/' # single quotes are mandatory
+  only:
+    changes:
+      - "**/*.py"
+      - "*.ini"
+      - "*.yml"
+      - .coveragerc
+
+# Release
+
+.only:staging: &only_staging
+  only:
+    refs:
+      - master
+
+.only:production: &only_production
+  only:
+    - tags
+  except:
+    - branches
+
+tag:latest:
+  # Tag latest images before deploying to staging
+  stage: tag
+  <<: *only_staging
+  image: docker:19.03.5
+  tags:
+    - docker
+  variables:
+    DJANGO_IMAGE: ${CI_REGISTRY_IMAGE}/django:${CI_COMMIT_SHA}
+    LATEST_IMAGE: ${CI_REGISTRY_IMAGE}/django:latest
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+    - docker tag ${DJANGO_IMAGE} ${LATEST_IMAGE}
+
+    - docker push ${LATEST_IMAGE}
+
+.release: &release
+  stage: deploy
+  image: governmentpaas/curl-ssl:latest
+  tags:
+    - docker
+  script:
+    - curl
+      -X POST
+      -F tag=${CI_COMMIT_SHA}
+      -F registry=$CI_REGISTRY_IMAGE
+      -F repository=$CI_REPOSITORY_URL
+      -F ci_registry_user=$CI_REGISTRY_USER
+      -F ci_registry_password=$CI_REGISTRY_PASSWORD
+      https://langify.host1.codethink.de/deploy/$ENVIRONMENT.config.php
+
+backend:release:staging:
+  <<: *release
+  <<: *only_staging
+  variables:
+    ENVIRONMENT: staging
+  except:
+    changes:
+      - "**/*.md"
+  environment:
+    name: staging
+    url: https://staging.ellen4all.org
+
+backend:release:production:
+  <<: *release
+  <<: *only_production
+  variables:
+    ENVIRONMENT: production
+  environment:
+    name: production
+    url: https://ellen4all.org

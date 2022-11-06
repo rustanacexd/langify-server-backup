@@ -1,0 +1,27 @@
+1. [ ] checked if database **migration** necessary
+   - [ ] checked if a new database model was added to **personal data** endpoints
+   - [ ] checked if the user ID and sensitive data were protected in **personal data** endpoints
+2. [ ] checked if **admin panel** update necessary
+3. [ ] checked if **HTML of untrusted sources** is dealt with
+4. [ ] ran **tests**
+5. [ ] checked if the **API documentation** needs an update
+   - [ ] it looks good
+   - [ ] request and response objects are accurate
+   - [ ] HTTP status codes are accurate
+   - [ ] filters are up-to-date
+6. [ ] checked if other **documentation** should be updated
+   - [ ] docstrings
+   - [ ] readme
+   - [ ] permissions
+   - [ ] privacy
+
+Review requested from: 
+
+
+
+
+7. increment API version?
+8. mention Jira issues?
+
+
+A comprehensive example: https://docs.gitlab.com/ee/development/database_merge_request_checklist.html

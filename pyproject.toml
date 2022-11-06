@@ -1,0 +1,84 @@
+[tool.black]
+line-length = 80
+skip-string-normalization = true
+target-version = ['py36']
+exclude = "(up-to-date)"
+
+[tool.isort]
+skip = "up-to-date"
+line_length = 80
+combine_as_imports = true
+use_parentheses = true
+include_trailing_comma = true
+multi_line_output = 3
+indent = 4
+known_third_party="djangorestframework_camel_case,rest_auth"
+
+[tool.poetry]
+name = "Ellen4all"
+version = "0.x.x"
+description = "An open CAT platform for E.G. White literature"
+authors = ["Daniel Gilge <daniel@mylangify.com>", "Dmitriy Meleshko <dmitriy@mylangify.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+django = {version = "<2.2", extras = ["argon2"]}
+django-guardian = "^2.0"
+django-simple-history = "^2.7"
+pillow = "^6.0"
+psycopg2 = "^2.8"
+django-countries = "^5.3"
+pyuca = "^1.2"
+regex = "^2019.6"
+beautifulsoup4 = "^4.7"
+djangorestframework = "^3.9"
+drf-extensions = "^0.5.0"
+django-filter = "^2.1"
+raven = "^6.10"
+django-factory-boy = "^1.0"
+django-imagekit = "^4.0"
+randomcolor = "^0.4.4"
+requests-oauthlib = "^1.2"
+django-rest-auth = {git = "https://github.com/dgilge/django-rest-auth.git", branch = "updates"}
+django-sendfile2 = "^0.4.2"
+django-allauth = "=0.36.0"
+djangorestframework-camel-case = {git = "https://github.com/dgilge/djangorestframework-camel-case.git", branch = "customize-parser"}
+mailjet-rest = "^1.3"
+drf-yasg = "^1.16"
+docutils = "^0.14.0"
+xmldiff = "^2.3"
+lxml = "^4.3"
+plotly = "^3.10"
+pandas = "^0.24.2"
+django-redis = "^4.10"
+django-cachalot = "^2.1"
+celery = {version = "^4.3", extras = ["redis"]}
+django-celery-beat = "^1.5"
+slackclient = "^2.1"
+hiredis = "^1.0"
+sqlparse = "^0.3.0"
+uwsgi = "^2.0"
+django-health-check = "^3.10"
+argon2-cffi = "^19.1"
+packaging = "^19.1"
+ipython = "^7.8.0"
+bleach = "^3.1.0"
+djangorestframework-recaptcha = "^0.2.0"
+
+[tool.poetry.dev-dependencies]
+coverage = "^4.5"
+django-debug-toolbar = "^2.0"
+django-extensions = "^2.1"
+django-crispy-forms = "^1.7"
+selenium = "^3.141"
+tblib = "^1.4"
+werkzeug = "^0.15.4"
+pygments = "^2.4"
+markdown = "^3.1"
+coreapi = "^2.3"
+flake8 = "^3.7"
+jupyter = "^1.0"
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
+jupyter-contrib-nbextensions = "^0.5.1"
+isort = "^4.3"
+ipdb = "^0.12.0"

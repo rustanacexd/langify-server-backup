@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Ellen4all statistics</title>
+    <script src="{% static 'plotly/plotly.min.js' %}"></script>
+  </head>
+  <body>
+    {{ plot|safe }}
+    <div class="statistics">
+      <h3>Total</h3>
+      <ul>
+        <li>Sign ups: <strong>{{ sign_ups_total }}</strong></li>
+        <li>Edits: <strong>{{ translations_total }}</strong></li>
+        <li>AI translations: <strong>{{ ai_translations_total }}</strong></li>
+      </ul>
+      <h3>Notes</h3>
+      <ul>
+        <li>Deleted users and those with restricted processing are not included in the sign ups.</li>
+        <li>The new translations or edits are based on the historical paragraphs and headings excluding AI translations.</li>
+        <li>Translations per user are an average of all users how translated during that day.</li>
+        <li>Usage is based on the historical paragraphs and headings.</li>
+        <li>There is a bug that takes the value of the previous week if nobody used the platform during the current week.</li>
+      </ul>
+    </div>
+
+    <style>
+.statistics {
+  font-family: sans-serif;
+  padding: 50px;
+}
+    </style>
+  </body>
+</html>

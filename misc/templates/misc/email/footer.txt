@@ -1,0 +1,4 @@
+{% load i18n %}
+---
+{% trans 'Legal notice' %}: {% firstof protocol 'https' %}://{% firstof domain current_site.domain %}{% url 'legal_notice' %}
+{% trans 'Privacy' %}: {% firstof protocol 'https' %}://{% firstof domain current_site.domain %}{% url 'privacy' %}

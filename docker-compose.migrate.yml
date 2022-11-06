@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  django:
+    volumes:
+      # Add migration folders as volumes
+      - ./misc/migrations:/project/django/misc/migrations
+      - ./panta/migrations:/project/django/panta/migrations
+      - ./path/migrations:/project/django/path/migrations
+      - ./style_guide/migrations:/project/django/style_guide/migrations
+      - ./white_estate/migrations:/project/django/white_estate/migrations

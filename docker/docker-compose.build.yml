@@ -1,0 +1,30 @@
+version: "3.6"
+
+services:
+  builddb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-db-pseudo
+      args:
+        version: $POSTGRES_VERSION
+    image: ${CI_REGISTRY_IMAGE}/postgres:pseudo
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  buildtestdb:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-db-test
+      args:
+        version: $POSTGRES_VERSION
+    image: ${CI_REGISTRY_IMAGE}/postgres:test
+
+  build-django:
+    image: ${CI_REGISTRY_IMAGE}/django:${IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        version: ${CI_COMMIT_TAG:-NaN}
+      cache_from:
+        - ${CI_REGISTRY_IMAGE}/django:latest

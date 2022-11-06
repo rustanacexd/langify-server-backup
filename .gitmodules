@@ -1,0 +1,3 @@
+[submodule "up-to-date"]
+	path = up-to-date
+	url = ../django-up-to-date.git

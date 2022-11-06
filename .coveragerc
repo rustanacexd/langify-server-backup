@@ -1,0 +1,15 @@
+[run]
+source = .
+omit =
+  */migrations/*
+  */test*
+  */factories.py
+  */scripts/*
+  update_images.py
+
+[report]
+exclude_lines =
+  pragma: no cover
+  if settings.DEBUG:
+  raise NotImplementedError
+precision = 2

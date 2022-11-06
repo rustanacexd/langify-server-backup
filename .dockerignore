@@ -1,0 +1,10 @@
+**/__pycache__
+media/
+smedia/
+config.ini
+local.env
+**/*.ipynb
+**/*.log
+**/*.rdb
+**/*.sql
+**/*.zip

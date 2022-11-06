@@ -1,0 +1,5 @@
+# This file contains Python packages which require special software to be installed
+# Install them with `pipenv run pip install -r additional_packages.txt`
+
+# Configured for graphviz 2.40.1 installed via Homebrew
+pygraphviz --install-option="--include-path=/usr/local/Cellar/graphviz/2.40.1/include/graphviz" --install-option="--library-path=/usr/local/graphviz/2.40.1/lib"

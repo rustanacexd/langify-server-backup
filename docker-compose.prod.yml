@@ -1,0 +1,46 @@
+version: "3.6"
+
+x-django: &django
+  image: "${CI_REGISTRY_IMAGE}/django:${IMAGE_TAG}"
+  environment:
+    - DOCKER=1
+  env_file:
+    - ./default.env
+    - ./local.env
+  volumes:
+    - django_logs:/project/logs
+  stdin_open: true
+  tty: true
+  restart: always
+  depends_on:
+    - db
+    - redis
+
+services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+  celery:
+    <<: *django
+    command: celery -A langify worker -l INFO
+
+  beat:
+    <<: *django
+    command: celery -A langify beat -l INFO
+
+  notebook:
+    <<: *django
+    command: python manage.py shell_plus --notebook
+    ports:
+      - "8888:8888"
+
+  uwsgi:
+    <<: *django
+    environment:
+      - DOCKER=1
+      - DEBUG=0
+    ports:
+      - "8001:8001"

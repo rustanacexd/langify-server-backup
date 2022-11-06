@@ -1,0 +1,4 @@
+[flake8]
+ignore = E265,E731,F405,W503
+exclude = .venv,migrations
+max-line-length = 80

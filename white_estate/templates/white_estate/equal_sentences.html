@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Ellen4all equal sentences in EGW works</title>
+    <link href="{% static 'misc/c3.min.css' %}" rel="stylesheet">
+    <script src="{% static 'misc/d3.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'misc/c3.min.js' %}"></script>
+  </head>
+  <body>
+    <div class="statistics">
+      <div>
+        <h1>Equal sentences in EGW works</h1>
+        {% for work, similar_works in works %}
+        <h2>{{ work.title }}</h2>
+        <div id="{{ work.abbreviation }}"></div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <style>
+      .statistics {
+        text-align: center;
+        margin: 1em;
+        font-family: sans-serif;
+      }
+    </style>
+
+    <script>
+      {% for work, similar_works in works %}
+      var {{ work.abbreviation.lower }} = c3.generate({
+        bindto: "#{{ work.abbreviation }}",
+        data: {
+          columns: [
+            {% for title, sentences in similar_works.items %}
+            ["{{ title }}", {{ sentences }}],
+            {% endfor %}
+          ],
+          type : 'donut',
+          colors: {
+            '{{ work.title }}': '#c9c9c9',
+          }
+        },
+        donut: {
+          title: "{{ work.sentences }} sentences",
+        }
+      });
+      {% endfor %}
+    </script>
+  </body>
+</html>

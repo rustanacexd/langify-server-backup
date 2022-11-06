@@ -1,0 +1,24 @@
+version: '3.6'
+
+services:
+  db:
+    image: ${CI_REGISTRY_IMAGE}/postgres:test
+  redis:
+    image: redis:${REDIS_VERSION}
+  django:
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./default.env
+      - ./local.env
+    command: >
+      sh -c "mkdir smedia &&
+             touch django_auth.log &&
+             coverage run manage.py test \
+               --settings=langify.settings_test \
+               --exclude selenium \
+               --exclude online \
+               --exclude slow \
+               -k
+             coverage report --skip-covered -i"
